@@ -25,11 +25,17 @@ pipeline {
                 sh 'printenv'
             }
         }
+        stage('random') {
+            steps {
+                sh "echo $RANDOM > randomfile.txt"
+            }
+        }
     }
     
     post {
         always {
             echo 'POST: This will always run'
+            archiveArtifacts artifacts: 'randomfile.txt', fingerprint: true
         }
         success {
             echo 'POST: This will run only if successful'
