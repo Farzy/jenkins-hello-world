@@ -1,6 +1,12 @@
 /* Requires the Docker Pipeline plugin */
 pipeline {
     agent { docker { image 'node:16.17.1-alpine' } }
+
+    environment {
+        DISABLE_AUTH = 'true'
+        DB_ENGINE    = 'sqlite'
+    }
+
     stages {
         stage('build') {
             steps {
@@ -12,7 +18,15 @@ pipeline {
                 '''
             }
         }
+        stage('env vars') {
+            steps {
+                echo "Database engine is ${DB_ENGINE}"
+                echo "DISABLE_AUTH is ${DISABLE_AUTH}"
+                sh 'printenv'
+            }
+        }
     }
+    
     post {
         always {
             echo 'POST: This will always run'
