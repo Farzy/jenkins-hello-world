@@ -27,7 +27,7 @@ pipeline {
         }
         stage('random') {
             steps {
-                sh "dd if=/dev/urandom bs=64 count=1 | sha256sum > randomfile.txt'"
+                sh "dd if=/dev/urandom bs=64 count=1 | sha256sum > randomfile.txt"
             }
         }
     }
