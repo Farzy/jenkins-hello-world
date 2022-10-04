@@ -5,8 +5,11 @@ pipeline {
         stage('build') {
             steps {
                 sh 'node --version'
-                echo 'On master branch'
-                sh 'printenv'
+                sh 'echo "Hello World"'
+                // sh '''
+                //     echo "Multiline shell steps works too"
+                //     ls -lah
+                // '''
             }
         }
     }
