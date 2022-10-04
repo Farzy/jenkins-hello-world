@@ -27,7 +27,7 @@ pipeline {
         }
         stage('random') {
             steps {
-                sh "echo ${RANDOM} > randomfile.txt"
+                sh "bash -c 'echo ${RANDOM} > randomfile.txt'"
             }
         }
     }
