@@ -49,7 +49,8 @@ pipeline {
                 buildingTag()
             }
             steps {
-                echo "BUILDING A TAG! This stage only executes on tag build"
+                echo "BUILDING A TAG: '${TAG_NAME}'!"
+                echo "This stage only executes on tag build"
             }
         }
     }
