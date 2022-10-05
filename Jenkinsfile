@@ -16,6 +16,8 @@ pipeline {
                     echo "Multiline shell steps works too"
                     ls -lah
                 '''
+                echo 'Run PS'
+                sh 'ps aux'
             }
         }
         stage('env vars') {
