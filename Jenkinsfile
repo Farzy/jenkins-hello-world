@@ -16,9 +16,9 @@ pipeline {
                     echo "Multiline shell steps works too"
                     ls -lah
                 '''
-                echo 'Run PS'
             }
             steps {
+                echo 'Run PS'
                 sh 'ps aux'
             }
         }
