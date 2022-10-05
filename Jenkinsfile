@@ -17,6 +17,8 @@ pipeline {
                     ls -lah
                 '''
                 echo 'Run PS'
+            }
+            steps {
                 sh 'ps aux'
             }
         }
