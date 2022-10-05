@@ -5,6 +5,8 @@ pipeline {
         stage('build') {
             steps {
                 sh 'node --version'
+                echo 'On master branch'
+                sh 'printenv'
             }
         }
     }
