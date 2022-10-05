@@ -5,6 +5,7 @@ pipeline {
     environment {
         DISABLE_AUTH = 'true'
         DB_ENGINE    = 'sqlite'
+        VERBOSE      = 'false'
     }
 
     stages {
@@ -16,21 +17,39 @@ pipeline {
                     echo "Multiline shell steps works too"
                     ls -lah
                 '''
-                echo 'Run PS'
-                sh 'ps aux'
             }
         }
         stage('env vars') {
+            options {
+                timestamps()
+            }
             steps {
                 echo "Database engine is ${DB_ENGINE}"
                 echo "DISABLE_AUTH is ${DISABLE_AUTH}"
                 sh 'printenv'
             }
         }
+        stage('Verbose') {
+            when {
+                environment name: 'VERBOSE', value: 'true'
+            }
+            steps {
+                echo 'Run PS'
+                sh 'ps aux'
+            }
+        }
         stage('random') {
             steps {
                 sh "dd if=/dev/urandom bs=64 count=1 | sha256sum > randomfile.txt"
                 sh "dd if=/dev/urandom bs=64 count=10 | sha256sum > randomfile2.txt"
+            }
+        }
+        stage('tagged') {
+            when {
+                buildingTag()
+            }
+            steps {
+                echo "BUILDING A TAG! This stage only executes on tag build"
             }
         }
     }
