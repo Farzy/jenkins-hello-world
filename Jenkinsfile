@@ -6,7 +6,7 @@ pipeline {
         DISABLE_AUTH = 'true'
         DB_ENGINE    = 'sqlite'
         VERBOSE      = 'false'
-        // MYTAG        = sh(returnStdout: true, script: 'git describe --tags --exact-match || true').trim()
+        MYTAG        = sh(returnStdout: true, script: 'git describe --tags --exact-match || true').trim()
     }
 
     stages {
