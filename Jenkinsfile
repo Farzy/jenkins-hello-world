@@ -49,7 +49,7 @@ pipeline {
             when {
                 anyOf {
                     buildingTag()
-                    not { equals expected: '', actual: env.MYTAG }
+                    not { environment name: 'MYTAG', value: '' }
                 }
             }
             steps {
