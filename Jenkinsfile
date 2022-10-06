@@ -49,13 +49,13 @@ pipeline {
             when {
                 anyOf {
                     buildingTag()
-                    not { environment name: 'MYTAG', value: '' }
+                    // not { environment name: 'MYTAG', value: '' }
                 }
             }
             steps {
                 // TAG_NAME is not available when there is not tag build
-                // echo "BUILDING A TAG: '${TAG_NAME}' or '${MYTAG}'!"
-                echo "BUILDING A TAG: '${MYTAG}'!"
+                echo "BUILDING A TAG: '${TAG_NAME}'!"
+                // echo "BUILDING A TAG: '${MYTAG}'!"
                 echo "This stage only executes on tag build.  "
             }
         }
