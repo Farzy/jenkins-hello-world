@@ -9,6 +9,9 @@ pipeline {
     }
 
     stages {
+        stage('Setup') {
+            sh 'apk update && apk add git'
+        }
         stage('build') {
             steps {
                 sh 'node --version'
