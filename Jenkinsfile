@@ -45,11 +45,17 @@ pipeline {
             }
         }
         stage('tagged') {
+            environment {
+                MYTAG = "${sh(returnStdout: true, script: 'git describe --tags --exact-match || true').trim()}"
+            }
             when {
-                buildingTag()
+                anyOf {
+                    buildingTag()
+                    not { equals expected: '', actual: '${MYTAG}' }
+                }
             }
             steps {
-                echo "BUILDING A TAG: '${TAG_NAME}'!"
+                echo "BUILDING A TAG: '${TAG_NAME}' or '${MYTAG}'!"
                 echo "This stage only executes on tag build.  "
             }
         }
