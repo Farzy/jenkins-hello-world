@@ -45,15 +45,26 @@ pipeline {
                 sh "dd if=/dev/urandom bs=64 count=10 | sha256sum > randomfile2.txt"
             }
         }
-        stage('Draft PR?') {
+        stage('Draft PR') {
             when {
                 expression {
-                    env.CHANGE_ID
+                    env.CHANGE_ID && pullRequest.draft
                 }
             }
             steps {
                 println "We are in a PR: ${env.CHANGE_ID}"
-                println "Draft status is: ${pullRequest.draft}"
+                println "This is a draft"
+            }
+        }
+        stage('Not a Draft PR') {
+            when {
+                expression {
+                    env.CHANGE_ID && !pullRequest.draft
+                }
+            }
+            steps {
+                println "We are in a PR: ${env.CHANGE_ID}"
+                println "This is a draft"
             }
         }
         stage('tagged') {
