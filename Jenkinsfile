@@ -52,7 +52,7 @@ pipeline {
                 }
             }
             steps {
-                println "We are in a PR: ${env.CHANGE_ID}"
+                println "We are in PR#${env.CHANGE_ID}"
                 println "This is a draft"
             }
         }
@@ -63,8 +63,8 @@ pipeline {
                 }
             }
             steps {
-                println "We are in a PR: ${env.CHANGE_ID}"
-                println "This is a draft"
+                println "We are in PR#${env.CHANGE_ID}"
+                println "This is NOT a draft"
             }
         }
         stage('tagged') {
