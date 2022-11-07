@@ -2,6 +2,10 @@
 pipeline {
     agent { docker { image 'node:16.17.1' } }
 
+    triggers {
+        issueCommentTrigger('^REBUILD$')
+    }
+
     environment {
         DISABLE_AUTH = 'true'
         DB_ENGINE    = 'sqlite'
