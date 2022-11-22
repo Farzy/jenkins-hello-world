@@ -1,0 +1,69 @@
+pipeline {
+    agent none
+
+    /* Debug parameter. TO REMOVE BEFORE MERGE */
+    parameters {
+        booleanParam(name: 'DOCKER_ONLY', defaultValue: true, description: 'Only build Docker image')
+    }
+    environment {
+        CARGO_NET_GIT_FETCH_WITH_CLI = 'true'
+        DOCKER_IMAGE = 'dfns-signer'
+        DOCKER_DEFAULT_TAG = 'stable'
+    }
+
+    stages {
+        stage('Parallel stages') {
+            /* Fast fail if any parallel step fails */
+            failFast true
+            parallel {
+                stage('Main build/test') {
+                    agent {
+                        label 'ecs'
+                    }
+                    when { not { expression { params.DOCKER_ONLY } } }
+                    stages {
+                        stage('Build') {
+                            steps {
+                                withCredentials([gitUsernamePassword(credentialsId: 'github-app-credentials')]) {
+                                    sh "cargo build"
+                                }
+                            }
+                        }
+                        stage('Test') {
+                            steps {
+                                sh "cargo test"
+                            }
+                        }
+                        stage('Clippy') {
+                            steps {
+                                sh "cargo clippy --all --exclude dfns-signer-api --exclude dfns-signer-tests --lib -- --no-deps -D clippy::all -D clippy::unwrap_used -D clippy::expect_used"
+                                sh "cargo clippy --all --exclude dfns-signer-api --tests -- --no-deps -D clippy::all"
+                            }
+                        }
+                        stage('Rustfmt') {
+                            steps {
+                                sh "cargo fmt --all -- --check"
+                            }
+                        }
+                    }
+                }
+                stage('Docker build') {
+                    agent {
+                        label 'ec2'
+                    }
+
+                    stages {
+                        stage('Docker build - stable') {
+                            steps {
+                                withCredentials([gitUsernamePassword(credentialsId: 'github-app-credentials')]) {
+                                    sh 'docker build --build-arg GIT_USERNAME="${GIT_USERNAME}" --build-arg GIT_PASSWORD="${GIT_PASSWORD}" -t ${DOCKER_IMAGE}:${DOCKER_DEFAULT_TAG} -f Dockerfile .'
+                                }
+                                sh 'docker image ls'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
