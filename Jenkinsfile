@@ -3,7 +3,7 @@ pipeline {
     agent { docker { image 'node:16.17.1' } }
 
     triggers {
-        issueCommentTrigger('^REBUILD')
+        issueCommentTrigger('.*REBUILD.*')
     }
 
     environment {
@@ -14,6 +14,21 @@ pipeline {
     }
 
     stages {
+        stage('Build trigger') {
+            steps {
+                script {
+                    def triggerCause = currentBuild.rawBuild.getCause(org.jenkinsci.plugins.pipeline.github.trigger.IssueCommentCause)
+
+                    if (triggerCause) {
+                        echo("Build was started by ${triggerCause.userLogin}, who wrote: " +
+                             "\"${triggerCause.comment}\", which matches the " +
+                             "\"${triggerCause.triggerPattern}\" trigger pattern.")
+                    } else {
+                        echo('Build was not started by a trigger')
+                    }
+                }
+            }
+        }
         stage('build') {
             steps {
                 sh 'node --version'
