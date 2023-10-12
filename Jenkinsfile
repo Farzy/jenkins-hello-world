@@ -4,6 +4,7 @@ pipeline {
 
     triggers {
         issueCommentTrigger('.*REBUILD.*')
+        // cron('*/3 * * * *')
     }
 
     environment {
